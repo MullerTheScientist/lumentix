@@ -5,6 +5,7 @@ use crate::events::EventCancelled;
 use crate::storage;
 use crate::types::{Event, EventStatus, Ticket};
 use crate::validation;
+use crate::events::EventCreated;
 use crate::events::PlatformFeeUpdated;
 use soroban_sdk::{contract, contractimpl, Address, Env, String};
 use soroban_sdk::{contract, contractimpl, Address, Env, String, Vec};
@@ -55,7 +56,7 @@ impl LumentixContract {
 
         let event = Event {
             id: event_id,
-            organizer,
+            organizer: organizer.clone(),
             name,
             description,
             location,
@@ -68,6 +69,18 @@ impl LumentixContract {
         };
 
         storage::set_event(&env, event_id, &event);
+
+        // Emit EventCreated event
+        EventCreated::emit(
+            &env,
+            event_id,
+            organizer,
+            event.name,
+            event.ticket_price,
+            event.max_tickets,
+            event.start_time,
+            event.end_time,
+        );
 
         Ok(event_id)
     }

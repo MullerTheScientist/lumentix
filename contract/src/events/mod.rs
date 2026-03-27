@@ -24,6 +24,31 @@ impl CheckInEvent {
     }
 }
 
+/// Event emitted when a new event is created
+pub struct EventCreated;
+
+impl EventCreated {
+    pub fn emit(
+        env: &Env,
+        event_id: u64,
+        organizer: Address,
+        name: String,
+        ticket_price: i128,
+        max_tickets: u32,
+        start_time: u64,
+        end_time: u64,
+    ) {
+        env.events().publish(
+            (symbol_short!("evtcreate"),),
+            (
+                event_id,
+                organizer,
+                name,
+                ticket_price,
+                max_tickets,
+                start_time,
+                end_time,
+            ),
 /// Event emitted when platform fee is updated
 pub struct PlatformFeeUpdated;
 
