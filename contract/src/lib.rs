@@ -32,6 +32,12 @@ impl SponsorsContract {
             sponsor_count: 0,
         };
         env.storage().persistent().set(&key, &tier);
+
+        // Emit SponsorTierRegistered event
+        env.events().publish(
+            (symbol_short!("sponstier"),),
+            (event_id, tier_id, price, max_sponsors),
+        );
     }
 
     pub fn contribute(env: Env, event_id: String, tier_id: String, sponsor: Address, amount: i128) {
